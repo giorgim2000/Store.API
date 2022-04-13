@@ -16,6 +16,11 @@ namespace Store.API.Controllers
             _productService = productService;
         }
         [HttpGet]
+        public async Task<ActionResult<List<ProductDto>>> GetAllProducts()
+        {
+            return Ok(await _productService.GetAllProducts());
+        }
+        [HttpGet("{pageNumber}/{pageSize}")]
         public async Task<ActionResult<List<ProductDto>>> GetAllProducts(int pageSize = 10, int pageNumber = 1)
         {
             if(pageSize > maxPageSize)
@@ -32,7 +37,7 @@ namespace Store.API.Controllers
                 return Ok(product);
         }
         [HttpPost]
-        public async Task<ActionResult<ProductDto?>> CreateProductAsync(ProductDto product)
+        public async Task<ActionResult<ProductForInputDto?>> CreateProductAsync(ProductForInputDto product)
         {
             var res = await _productService.CreateProductAsync(product);
             if (res == null)
@@ -40,6 +45,17 @@ namespace Store.API.Controllers
             else
                 return Ok(res);
         }
+
+        [HttpPut(nameof(UpdateProduct))]
+        public async Task<ActionResult> UpdateProduct(ProductDto input)
+        {
+            var res = await _productService.UpdateProductAsync(input);
+            if (res)
+                return Ok();
+            else
+                return BadRequest();
+        }
+
         [HttpPut("{productId}")]
         public async Task<ActionResult> ChangeProductPrice(int productId, int newPrice)
         {

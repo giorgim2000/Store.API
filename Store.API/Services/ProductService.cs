@@ -12,6 +12,17 @@ namespace Store.API.Services
         {
             _context = context;
         }
+        public async Task<List<ProductDto>> GetAllProducts()
+        {
+            return await _context.Products.Select(p => new ProductDto
+            {
+                Id = p.Id,
+                ProductName = p.ProductName,
+                Price = p.Price,
+                BarCode = p.BarCode,
+                Quantity = p.Quantity
+            }).ToListAsync();
+        }
         public async Task<bool> ChangeProductPrice(int productId, int newPrice)
         {
             var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == productId);
@@ -32,7 +43,7 @@ namespace Store.API.Services
             return await SaveChangesAsync();
         }
 
-        public async Task<ProductDto?> CreateProductAsync(ProductDto product)
+        public async Task<ProductForInputDto?> CreateProductAsync(ProductForInputDto product)
         {
             var productToCreate = new Product()
             {
@@ -46,6 +57,24 @@ namespace Store.API.Services
                 return product;
             else
                 return null;
+        }
+
+        public async Task<bool> UpdateProductAsync(ProductDto input)
+        {
+            var product = await _context.Products.FirstOrDefaultAsync(i => i.Id == input.Id);
+            if (product == null)
+                return false;
+
+            if(!string.IsNullOrWhiteSpace(input.ProductName))
+                product.ProductName = input.ProductName;
+            if(input.Quantity != 0)
+                product.Quantity = input.Quantity;
+            if(input.Price != 0)
+                product.Price = input.Price;
+            if(!string.IsNullOrWhiteSpace(input.BarCode))
+                product.BarCode = input.BarCode;
+
+            return await SaveChangesAsync();
         }
 
         public async Task<bool> DeleteProductById(int id)
@@ -65,6 +94,7 @@ namespace Store.API.Services
                 .Take(pageSize)
                 .Select(p => new ProductDto
                 {
+                    Id = p.Id,
                     ProductName = p.ProductName,
                     Price = p.Price,
                     BarCode = p.BarCode,

@@ -42,14 +42,19 @@ namespace Store.API.Services
         }
         
 
-        public async Task<SignInResult> LogIn(string logIn, string password)
+        public async Task<bool> LogIn(UserForLogIn input)
         {
-            var result = await _signInManager.PasswordSignInAsync(new AppUser()
+            var user = await _userManager.FindByNameAsync(input.UserName);
+            var checkPass = await _userManager.CheckPasswordAsync(user, input.Password);
+            if (checkPass)
             {
-                UserName = logIn
-            }, password, false, false);
-
-            return result;
+                await _signInManager.PasswordSignInAsync(user, input.Password, false, false);
+            }
+            else
+                return false;
+            
+            
+            return checkPass;
         }
 
         public async Task LogOut()

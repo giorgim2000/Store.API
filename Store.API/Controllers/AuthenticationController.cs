@@ -26,16 +26,16 @@ namespace Store.API.Controllers
                 return BadRequest(result.Errors.FirstOrDefault()?.Description);
         }
         [HttpPost(nameof(Authenticate))]
-        public async Task<IActionResult> Authenticate(string logIn, string password)
+        public async Task<IActionResult> Authenticate(UserForLogIn input)
         {
-            var result = await _authenticationService.LogIn(logIn,password);
-            if (result.Succeeded)
-                return NoContent();
+            var result = await _authenticationService.LogIn(input);
+            if (result)
+                return Ok();
             else
                 return Unauthorized();
         }
 
-        [HttpPost]
+        [HttpPost(nameof(LogOut))]
         public async Task<IActionResult> LogOut()
         {
             await _authenticationService.LogOut();

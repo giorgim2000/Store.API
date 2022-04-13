@@ -2,9 +2,8 @@
 
 namespace Store.API.Models
 {
-    public class ProductDto
+    public class ProductForInputDto
     {
-        public int Id { get; set; }
         [Required]
         [MaxLength(200)]
         public string ProductName { get; set; } = string.Empty;

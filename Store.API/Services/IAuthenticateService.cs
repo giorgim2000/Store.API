@@ -6,7 +6,7 @@ namespace Store.API.Services
     public interface IAuthenticateService
     {
         Task<IdentityResult> RegisterUser(UserForCreationDto newUser);
-        Task<SignInResult> LogIn(string logIn, string password);
+        Task<bool> LogIn(UserForLogIn input);
         Task LogOut();
     }
 }
