@@ -10,7 +10,7 @@ namespace Store.API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
-        const int maxPageSize = 20;
+        const int maxPageSize = 20;//
         public ProductsController(IProductService productService)
         {
             _productService = productService;
